@@ -1,0 +1,10 @@
+steps:
+  # Pas 1: Instalează dependințele Python
+  - name: 'python:3.9'
+    entrypoint: pip
+    args: ['install', '-t', '.', '-r', 'requirements.txt']
+
+  # Pas 2: Face deploy pe App Engine
+  - name: 'gcr.io/cloud-builders/gcloud'
+    args: ['app', 'deploy', 'app.yaml']
+timeout: '1600s'
