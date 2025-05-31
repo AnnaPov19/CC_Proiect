@@ -9,7 +9,6 @@ steps:
     args: ['app', 'deploy', 'app.yaml', '--project=cloud-computing-454218', '--verbosity=debug']
 
 options:
-  logging: CLOUD_LOGGING_ONLY
   substitutionOption: ALLOW_LOOSE
 
 timeout: '1600s'
