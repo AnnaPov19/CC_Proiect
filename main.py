@@ -1,55 +1,40 @@
 from flask import Flask, request, jsonify
-from flask_restful import Resource, Api
-import firebase_admin
-from firebase_admin import credentials, firestore
+from google.cloud import datastore
 import datetime
-import os
-
-print(">>> Pornim aplicația...")
 
 app = Flask(__name__)
-api = Api(app)
+client = datastore.Client()
 
-try:
-    cred = credentials.ApplicationDefault()
-    firebase_admin.initialize_app(cred, {
-        'projectId': 'cloud-computing-454218',
-    })
-    db = firestore.client()
-    print(">>> Firebase inițializat.")
-except Exception as e:
-    print(">>> EROARE Firebase:", e)
+@app.route('/ticket/<ticket_id>', methods=['GET'])
+def get_ticket(ticket_id):
+    key = client.key('Bilet', ticket_id)
+    entity = client.get(key)
 
-class Ticket(Resource):
-    def get(self, ticket_id):
-        doc_ref = db.collection('bilete').document(ticket_id)
-        doc = doc_ref.get()
+    if not entity:
+        return jsonify({'message': 'Biletul nu există'}), 404
 
-        if not doc.exists:
-            return {'message': 'Biletul nu există'}, 404
+    ticket_date = datetime.datetime.strptime(entity['data'], '%d.%m.%Y').date()
+    current_date = datetime.date.today()
 
-        ticket_data = doc.to_dict()
-        ticket_date = datetime.datetime.strptime(ticket_data['data'], '%d.%m.%Y').date()
-        current_date = datetime.date.today()
+    if ticket_date < current_date:
+        return jsonify({'valid': False, 'message': 'Bilet expirat'})
+    else:
+        return jsonify({'valid': True, 'bilet': dict(entity)})
 
-        if ticket_date < current_date:
-            return {'valid': False, 'message': 'Bilet expirat'}, 200
-        else:
-            return {'valid': True, 'bilet': ticket_data}, 200
+@app.route('/ticket', methods=['POST'])
+def create_ticket():
+    data = request.get_json()
+    required = ['data', 'destinație', 'nume_client', 'ora']
+    if not all(k in data for k in required):
+        return jsonify({'message': 'Date incomplete'}), 400
 
-    def post(self):
-        data = request.get_json()
-        required_fields = ['data', 'destinație', 'nume_client', 'ora']
-        if not all(field in data for field in required_fields):
-            return {'message': 'Date incomplete'}, 400
+    new_id = f"bilet-{datetime.datetime.now().strftime('%Y%m%d%H%M%S')}"
+    key = client.key('Bilet', new_id)
+    entity = datastore.Entity(key=key)
+    entity.update({**data, 'id': new_id})
+    client.put(entity)
 
-        new_id = f"bilet-{datetime.datetime.now().strftime('%Y%m%d%H%M%S')}"
-        data['id'] = new_id
-        db.collection('bilete').document(new_id).set(data)
-
-        return {'message': 'Bilet creat', 'id': new_id}, 201
-
-api.add_resource(Ticket, '/ticket', '/ticket/<string:ticket_id>')
+    return jsonify({'message': 'Bilet creat', 'id': new_id}), 201
 
 if __name__ == '__main__':
-    app.run(host='127.0.0.1', port=8080, debug=True)
+    app.run()
