@@ -6,7 +6,7 @@ steps:
 
   # Pas 2: Face deploy pe App Engine
   - name: 'gcr.io/cloud-builders/gcloud'
-    args: ['app', 'deploy', 'ticket-booking/app.yaml']
+    args: ['app', 'deploy', 'ticket-booking/app.yaml', '--project=cloud-computing-454218', '--verbosity=debug']
 
 options:
   logging: CLOUD_LOGGING_ONLY
