@@ -7,7 +7,7 @@ client = firestore.Client(database="bilete")
 
 @app.route('/ticket/<ticket_id>', methods=['GET'])
 def get_ticket(ticket_id):
-    doc_ref = client.collection("Bilet").document(ticket_id)
+    doc_ref = client.collection("bilete").document(ticket_id)
     entity = doc_ref.get()
 
     if not entity.exists:
@@ -31,7 +31,7 @@ def create_ticket():
         return jsonify({'message': 'Date incomplete'}), 400
 
     new_id = f"bilet-{datetime.datetime.now().strftime('%Y%m%d%H%M%S')}"
-    doc_ref = client.collection("Bilet").document(new_id)
+    doc_ref = client.collection("bilete").document(new_id)
     doc_ref.set({**data, 'id': new_id})
 
     return jsonify({'message': 'Bilet creat', 'id': new_id}), 201
