@@ -1,5 +1,5 @@
 from flask import Flask, request, jsonify
-from google.cloud import datastore
+from google.cloud import firestore
 import datetime
 
 app = Flask(__name__)
