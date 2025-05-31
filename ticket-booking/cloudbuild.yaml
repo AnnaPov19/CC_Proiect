@@ -8,7 +8,4 @@ steps:
   - name: 'gcr.io/cloud-builders/gcloud'
     args: ['app', 'deploy', 'app.yaml']
 
-options:
-  logging: CLOUD_LOGGING_ONLY  # Logs doar în Cloud Logging, nu în bucket
-
 timeout: '1600s'
