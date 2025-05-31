@@ -1,6 +1,0 @@
-ticket-booking/
-├── main.py            # Aplicația principală
-├── requirements.txt   # Dependințe
-├── app.yaml           # Configurație App Engine
-└── test/              # Teste
-    └── test_api.py
