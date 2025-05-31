@@ -3,7 +3,7 @@ from google.cloud import firestore
 import datetime
 
 app = Flask(__name__)
-client = firestore.Client()
+client = firestore.Client(database="bilete")
 
 @app.route('/ticket/<ticket_id>', methods=['GET'])
 def get_ticket(ticket_id):
