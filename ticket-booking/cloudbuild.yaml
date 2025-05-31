@@ -8,4 +8,7 @@ steps:
   - name: 'gcr.io/cloud-builders/gcloud'
     args: ['app', 'deploy', 'app.yaml']
 
+options:
+  substitutionOption: ALLOW_LOOSE
+
 timeout: '1600s'
