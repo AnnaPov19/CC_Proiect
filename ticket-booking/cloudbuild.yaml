@@ -2,11 +2,11 @@ steps:
   # Pas 1: Instalează dependințele Python
   - name: 'python:3.10'
     entrypoint: pip
-    args: ['install', '-t', '.', '-r', 'requirements.txt']
+    args: ['install', '-t', '.', '-r', 'ticket-booking/requirements.txt']
 
   # Pas 2: Face deploy pe App Engine
   - name: 'gcr.io/cloud-builders/gcloud'
-    args: ['app', 'deploy', 'app.yaml']
+    args: ['app', 'deploy', 'ticket-booking/app.yaml']
 
 options:
   logging: CLOUD_LOGGING_ONLY
