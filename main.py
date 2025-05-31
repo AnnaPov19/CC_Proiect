@@ -24,7 +24,7 @@ def get_ticket(ticket_id):
 @app.route('/ticket', methods=['POST'])
 def create_ticket():
     data = request.get_json()
-    required = ['data', 'destinație', 'nume_client', 'ora']
+    required = ['data', 'destinație', 'nume_client', 'ora', 'plecare']
     if not all(k in data for k in required):
         return jsonify({'message': 'Date incomplete'}), 400
 
