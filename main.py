@@ -3,7 +3,7 @@ from google.cloud import datastore
 import datetime
 
 app = Flask(__name__)
-client = datastore.Client()
+client = datastore.Client(datastore="bilete")
 
 @app.route('/ticket/<ticket_id>', methods=['GET'])
 def get_ticket(ticket_id):
